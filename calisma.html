@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" >
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    
+    <title>Document</title>
+    <!--durum 1 için css kodları-->
+    <style>
+           body{
+            background-color: wheat;
+        }
+        .container{
+width: 1300px;
+margin-top: 50px;
+margin-left: auto;
+margin-right: auto;
+height: max-content;
+background-color: cornflowerblue;
+        }
+        .box{
+            height: 350px;
+            width: 350px;
+            margin-top: 25px;
+            background-color: coral;
+            float: left;
+            margin-left: 75px;
+        }
+        .box:nth-child(3n+1){
+            margin-left: 25px;
+        }
+    </style>
+    <!--Durum 2 için css kodları-->
+    <style>
+        #mesajIcerik{
+            overflow-y: scroll;
+            height: 290px;
+        }
+        #mesaj h4{
+padding-left:10px ;
+        }
+        .red{
+            margin-left: 100px;
+            background-color: red;
+            color: whitesmoke;
+            padding-left:15px ;
+            padding-top:15px ;
+            height:20px;
+            width: 100px;
+        }
+        .green{
+            margin-left: 10px;
+            background-color:mediumspringgreen;
+            color:black;
+            padding-left:15px ;
+            padding-top:15px ;
+            height:20px;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <div class="box" id="Haber">
+<div v-for="haber in haberler" v-if="haber.sayfaNumarasi==sayfa">
+ <table>
+     <tr>
+         <td colspan="2" style="height:120px;"><h4><strong>{{haber.baslik}}</strong></h4></td>
+     </tr>
+     <tr>
+        <td > <img :src="haber.resim" height="150" width="150"></td>
+        <td >
+        {{haber.icerik}}
+        </td>
+    </tr>
+    <tr><td colspan="2"><button v-for="x in haberler.length" @click="degistir(x)">{{x}}</button> </td></tr>
+ </table>
+   
+</div>
+    </div>
+    <div class="box" id="mesaj">
+        <div id="mesajIcerik">
+    <div v-for="m in mesajlar">
+     <h4 v-for="k in kisiler" v-if="k.kisiId==m.gonderenID" v-text="k.kisiAdi"></h4>
+   <div :class="{'red':m.gonderenID==1,'green':m.gonderenID==2}">{{m.mesaj}}</div>
+    </div></div>
+    <div id="mesajGonder" style="margin-left:20px;margin-top: 10px;"><input type="text" v-model="msj">
+    <button @click="gonder()">Gönder</button></div>
+    </div>
+    <div class="box" id="begen">
+<strong v-for="g in gonderiler">
+    {{g.gonderi}}
+    <br>
+<button :disabled="g.begenme==true" @click="g.begenme=!g.begenme">Beğen</button>
+<hr>
+</strong>
+    </div>
+    <div class="box" id="urun"></div>
+    <div class="box" id="akordiyonMenu"></div>
+    <div class="box" id="animasyon"></div>
+</div>
+<script>
+    //1.Div Vue.js Temelleri ile Dynamic Haber Bandı Tasarımı 
+    new Vue({
+        el:"#Haber",
+        data:{
+            sayfa:1,
+        
+haberler:[
+{
+    resim:"haber1.jpg",
+    baslik:"Kozan'da Murat Kekilli konserine yoğun ilgi",
+    sayfaNumarasi:1,
+    icerik:"Kozan'da Murat Kekilli konserine yoğun ilgi Murat Kekilli sahnede hayranlarının mutluluklarına şahit oldu Murat Kekilli'den Bülent Ersoy gafı Adana bu yıl 10."
+  
+},
+{
+    resim:"haber2.jpeg",
+    baslik:"Zelenskiy, NATO'nun uçak ve tanklarının sadece yüzde birini istediklerini söyledi",
+    sayfaNumarasi:2,
+    icerik:"sadece yüzde birini istediklerini ve 31 gündür bu yardımı beklediklerini belirterek, Peki, Avrupa-Atlantik topluluğuna kim liderlik ediyor? Korkutma yoluyla hala Moskova mı? ifadesini kullandı." 
+},
+{
+    resim:"haber3.webp",
+    baslik:"Avrupa Uzay Ajansının Güneş gözlem uydusu, Güneş'in yüksek çözünürlüklü fotoğrafını çekmeyi başardı.",
+    sayfaNumarasi:3,
+    icerik:"Autoevolution internet sitesinin haberine göre, ultraviyole aralığında Güneş koronasının yüksek çözünürlüklü görüntülerini elde etmek için Extreme Ultraviyole Görüntüleme Teleskobu (EUI) kullanıldı. "
+}
+],
+        },
+        methods:{
+            degistir(x){
+this.sayfa=x
+            }
+        }
+    });
+    //2.Div Mesajlaşma Sistemi
+    new Vue({
+   el:mesaj,
+   data:{
+       msj:"",
+       gonderenID:1,
+       alanID:2,
+    kisiler:[{
+        kisiId:1,
+        kisiAdi:"Cevdet"
+   },
+{
+    kisiId:2,
+    kisiAdi:"Selami"
+}],
+   mesajlar:[
+{
+    gonderenID:1,
+   alanID:2,
+   mesaj:"Selam"},
+   {
+    gonderenID:2,
+   alanID:1,
+   mesaj:"Selam"},
+   {
+    gonderenID:1,
+   alanID:2,
+   mesaj:"Naber"},
+   ]
+},
+methods:{
+    gonder(){
+    var newMesaj="{gonderenID:"+ this.gonderenID+",alanID:"+this.alanID+",mesaj:"+this.msj+"}"
+    this.mesajlar.push(newMesaj)
+    console.log(this.mesajlar)
+    }
+}
+    });
+    //3.Div Beğenme Sistemi
+    new Vue({
+        el:begen,
+        data:
+            {
+            begenmeDurumu:false,
+            gonderiler:[{
+         begenme:false,
+         gonderi:"İnsan aklın sınırlarını zorlamadıkça hiçbir şeye ulaşamaz."
+            },
+            {
+         begenme:true,
+         gonderi:"Hayat bisiklet gibidir, dengeyi kaybetmemek için ilerlemek gerekir."
+            },
+            {
+         begenme:false,
+         gonderi:"Dehanın 10da 1i yetenek 10da 9u da çalışmaktır."
+            },
+            {
+         begenme:false,
+         gonderi:"Yüksek ruhlar, her zaman sıradan akılların şiddetli muhalefetleriyle karşılaşırlar."
+            }
+        ]
+    }
+    })
+    //4.Ürün Sepetleme Sistemi
+    new Vue({
+
+    })
+    //5.Akordiyon Menü Tasarımı
+    new Vue({
+
+    })
+    //6.Animasyon Hazırlama
+    new Vue({
+
+    })
+
+</script>
+
+</body>
+</html>
